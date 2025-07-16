@@ -1,20 +1,108 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import * as signalR from '@microsoft/signalr';
+
+// Define the Todo interface to match the backend model
+interface Todo {
+  id: number;
+  title: string;
+  isComplete: boolean;
+}
+
+// Define the API base URL. Your backend is running on port 5013.
+const API_URL = 'http://localhost:5013'; // For regular HTTP requests
+const HUB_URL = 'http://localhost:5013/todohub'; // For the SignalR connection
 
 function App() {
-  const [todos, setTodos] = useState<string[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState('');
 
-  const addTodo = () => {
+  // Fetch todos from the backend when the component mounts
+  useEffect(() => {
+    const fetchInitialTodos = async () => {
+      try {
+        const response = await fetch(`${API_URL}/todos`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setTodos(data);
+      } catch (error) {
+        console.error('Failed to fetch todos:', error);
+      }
+    };
+
+    // Get the initial list of todos via a standard HTTP request.
+    fetchInitialTodos();
+
+    // Then, set up the real-time SignalR connection.
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl(HUB_URL)
+      .withAutomaticReconnect()
+      .build();
+
+    // This is the key part for synchronization. The backend calls "ReceiveTodos" on all clients,
+    // and this function receives the updated list and sets the state.
+    connection.on('ReceiveTodos', (updatedTodos: Todo[]) => {
+      setTodos(updatedTodos);
+    });
+
+    // Start the connection and log any errors.
+    async function start() {
+      try {
+        await connection.start();
+        console.log("SignalR Connected.");
+      } catch (err) {
+        console.error('SignalR Connection Error: ', err);
+        setTimeout(start, 5000);
+      }
+    }
+
+    start();
+
+    // Return a cleanup function to close the connection when the component unmounts.
+    return () => {
+      connection.stop();
+    };
+  }, []);
+
+  const addTodo = async () => {
     if (newTodo.trim() !== '') {
-      setTodos([...todos, newTodo]);
-      setNewTodo('');
+      try {
+        const response = await fetch(`${API_URL}/todos`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ title: newTodo }),
+        });
+
+        if (response.ok) {
+          setNewTodo('');
+          // We don't need to manually update state here. The backend will broadcast the
+          // new list via SignalR, and our listener above will handle the update.
+        } else {
+          console.error('Failed to add todo:', await response.text());
+        }
+      } catch (error) {
+        console.error('Failed to add todo:', error);
+      }
     }
   };
 
-  const deleteTodo = (index: number) => {
-    const newTodos = [...todos];
-    newTodos.splice(index, 1);
-    setTodos(newTodos);
+  const deleteTodo = async (id: number) => {
+    try {
+      const response = await fetch(`${API_URL}/todos/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        // The state update is handled by the SignalR broadcast, so we don't
+        // need to manually filter the list here.
+      } else {
+        console.error('Failed to delete todo:', await response.text());
+      }
+    } catch (error) {
+      console.error('Failed to delete todo:', error);
+    }
   };
 
   return (
@@ -45,12 +133,12 @@ function App() {
         </div>
 
         <div>
-          {todos.map((todo, index) => (
-            <div key={index} className="flex items-center justify-between py-2 border-b border-gray-200">
-              <span className="text-gray-700">{todo}</span>
+          {todos.map((todo) => (
+            <div key={todo.id} className="flex items-center justify-between py-2 border-b border-gray-200">
+              <span className="text-gray-700">{todo.title}</span>
               <button
                 className="text-red-500 hover:text-red-700 focus:outline-none"
-                onClick={() => deleteTodo(index)}
+                onClick={() => deleteTodo(todo.id)}
               >
                 Delete
               </button>
@@ -61,6 +149,7 @@ function App() {
         {todos.length === 0 && (
           <p className="text-gray-500 text-center mt-4">No todos yet!</p>
         )}
+
       </div>
     </div>
   );

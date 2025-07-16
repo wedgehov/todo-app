@@ -1,0 +1,38 @@
+
+services:
+  db:
+    image: postgres:16
+    container_name: todo-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: todos
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432" # Expose DB port to host for easier debugging
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d todos"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    container_name: todo-api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5013:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development  # Set the environment to Development
+      - ConnectionStrings__TodosDb=Host=db;Port=5432;Database=todos;Username=admin;Password=password
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
