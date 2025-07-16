@@ -16,7 +16,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173") // Your React frontend's address
+            var frontendOrigin = builder.Configuration["FrontendOrigin"] ?? "http://localhost:5173";
+            policy.WithOrigins(frontendOrigin)
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials(); // Required for SignalR
