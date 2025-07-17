@@ -35,8 +35,8 @@ jobs:
           tags: |
             # tag as 'main' for pushes to the main branch
             type=ref,event=branch
-            # tag as '1.0.1' for tags like 'v1.0.1'
-            type=semver,pattern={{version}}
+            # use the git tag name directly, e.g., 'v1.0.1'
+            type=ref,event=tag
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5

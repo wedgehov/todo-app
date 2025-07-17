@@ -43,7 +43,7 @@ spec:
       containers:
         - name: backend
           # IMPORTANT: Replace this with your actual image path from GHCR
-          image: ghcr.io/wedgehov/todo-api:v1.0.1
+          image: ghcr.io/wedgehov/todo-api:v1.0.2
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
