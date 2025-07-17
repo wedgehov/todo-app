@@ -33,6 +33,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  
+  frontend:
+    container_name: todo-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # For local development, the browser needs to talk to the API via the host machine's port.
+        # We map port 5013 on the host to the api container's port 8080.
+        VITE_REACT_APP_API_URL: http://localhost:5013
+    restart: always
+    ports:
+      - "5173:80" # Map host port 5173 to container port 80 (Nginx default)
+    depends_on:
+      - api
 
 volumes:
   postgres-data:

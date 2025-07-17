@@ -8,9 +8,14 @@ interface Todo {
   isComplete: boolean;
 }
 
-// Define the API base URL. Your backend is running on port 5013.
-const API_URL = 'http://localhost:5013'; // For regular HTTP requests
-const HUB_URL = 'http://localhost:5013/todohub'; // For the SignalR connection
+// Use the environment variable for the API URL, with a fallback for local development.
+//const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
+
+const API_URL = "https://todo-app.10.1.8.174.nip.io:31003"
+const HUB_URL = `${API_URL}/todohub`; // Derive the SignalR URL from the base API URL
+
+console.log("VITE_REACT_APP_API_URL value:", import.meta.env.VITE_REACT_APP_API_URL);
+console.log("API_URL value:", API_URL);
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -108,7 +113,7 @@ function App() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded lg px-8 pt-6 pb-8 mb-4 w-full max-w-lg">
-        <h1 className="text-2xl font-bold mb-6 text-center">Todo App</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-blue-700">Todo App</h1>
 
         <div className="flex items-center mb-4">
           <input
