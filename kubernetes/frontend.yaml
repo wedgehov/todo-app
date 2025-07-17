@@ -16,7 +16,7 @@ spec:
       containers:
         - name: frontend
           # IMPORTANT: Replace this with your actual image path
-          image: ghcr.io/wedgehov/todo-frontend:v1.0.3
+          image: ghcr.io/wedgehov/todo-frontend:v1.0.4
           imagePullPolicy: Always
           ports:
             # Assuming your production frontend image serves on port 80

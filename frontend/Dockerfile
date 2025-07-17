@@ -4,7 +4,6 @@ FROM node:20-alpine AS build
 # Use build-time variables to inject API URL. `ENV` makes it available to the `RUN` command.
 ARG VITE_REACT_APP_API_URL
 ENV VITE_REACT_APP_API_URL=$VITE_REACT_APP_API_URL
-ENV REACT_APP_API_URL=$VITE_REACT_APP_API_URL
 # Set the working directory
 WORKDIR /app
 

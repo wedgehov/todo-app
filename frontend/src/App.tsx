@@ -9,9 +9,10 @@ interface Todo {
 }
 
 // Use the environment variable for the API URL, with a fallback for local development.
-const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
+//const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
-//const API_URL = "https://todo-app.10.1.8.174.nip.io:31003"
+// for now hard code the API URL until we can get it from environment variables correctly
+const API_URL = "https://todo-app.10.1.8.174.nip.io:31003"
 const HUB_URL = `${API_URL}/todohub`; // Derive the SignalR URL from the base API URL
 
 console.log("VITE_REACT_APP_API_URL value:", import.meta.env.VITE_REACT_APP_API_URL);
