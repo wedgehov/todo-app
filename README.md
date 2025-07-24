@@ -40,7 +40,7 @@ The entire application stack can be run locally using Docker Compose.
 3.  **Build and run the containers:**
     From the root of the repository, run the following command:
     ```bash
-    docker-compose up --build
+    docker compose up --build
     ```
     This will build the Docker images for the frontend and backend, pull the PostgreSQL image, and start all three services.
 
@@ -53,7 +53,7 @@ The entire application stack can be run locally using Docker Compose.
 
 The PostgreSQL container only uses the `POSTGRES_PASSWORD` from the `.env` file on its very first run to initialize the database. The password is then stored in the persistent `postgres-data` volume. If you change the password in `.env`, you must reset the database by running:
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 Then, you can run `docker-compose up --build` again to re-initialize the database with the new credentials.
 
