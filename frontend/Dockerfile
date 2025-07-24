@@ -20,6 +20,6 @@ FROM nginx:stable-alpine
 # Copy the built React app to the NGINX html directory
 COPY --from=build /app/dist /usr/share/nginx/html
 # Copy our custom NGINX configuration to enable API proxying
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY default.conf.template /etc/nginx/templates/default.conf.template
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

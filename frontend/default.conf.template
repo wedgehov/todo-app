@@ -3,9 +3,8 @@ server {
 
     # Rule for the API endpoint
     location /todos {
-        # Forward requests to the 'api' service defined in docker-compose.yml
-        # The backend listens on port 8080 inside its container.
-        proxy_pass http://api:8080;
+        # Forward requests to the backend service. The URL is injected via the API_URL environment variable.
+        proxy_pass ${API_URL};
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -14,7 +13,8 @@ server {
 
     # Rule for the SignalR hub
     location /todohub {
-        proxy_pass http://api:8080;
+        # Forward requests to the backend service. The URL is injected via the API_URL environment variable.
+        proxy_pass ${API_URL};
         # Required for WebSocket connections
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
