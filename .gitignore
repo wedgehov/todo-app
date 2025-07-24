@@ -1,0 +1,9 @@
+# Local environment file - DO NOT COMMIT
+.env
+
+# IDE and editor directories
+.vscode/
+.idea/
+
+# OS-generated files
+.DS_Store

@@ -16,9 +16,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            // WARNING: This is a permissive CORS policy for debugging purposes only.
-            // It allows any origin to connect, which is insecure for production.
-            policy.SetIsOriginAllowed(origin => true)
+            // Read the allowed origin from configuration for security.
+            var allowedOrigin = builder.Configuration["FrontendOrigin"] ?? "http://localhost:5173";
+            policy.WithOrigins(allowedOrigin)
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials(); // Required for SignalR

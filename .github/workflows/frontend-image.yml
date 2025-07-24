@@ -41,7 +41,5 @@ jobs:
         with:
           context: ./frontend
           push: true
-          build-args: |
-            VITE_REACT_APP_API_URL=${{ vars.PROD_API_URL }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

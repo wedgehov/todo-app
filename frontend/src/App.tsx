@@ -8,15 +8,10 @@ interface Todo {
   isComplete: boolean;
 }
 
-// Use the environment variable for the API URL, with a fallback for local development.
-//const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
-
-// for now hard code the API URL until we can get it from environment variables correctly
-const API_URL = "https://todo-app.10.1.8.174.nip.io:31003"
-const HUB_URL = `${API_URL}/todohub`; // Derive the SignalR URL from the base API URL
-
-console.log("VITE_REACT_APP_API_URL value:", import.meta.env.VITE_REACT_APP_API_URL);
-console.log("API_URL value:", API_URL);
+// The API and Hub URLs are now relative to the origin the app is served from.
+// This removes the need for hardcoded IPs and complex CORS policies.
+const API_BASE_URL = "/todos";
+const HUB_URL = "/todohub";
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -26,7 +21,7 @@ function App() {
   useEffect(() => {
     const fetchInitialTodos = async () => {
       try {
-        const response = await fetch(`${API_URL}/todos`);
+        const response = await fetch(API_BASE_URL);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -74,7 +69,7 @@ function App() {
   const addTodo = async () => {
     if (newTodo.trim() !== '') {
       try {
-        const response = await fetch(`${API_URL}/todos`, {
+        const response = await fetch(API_BASE_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -97,7 +92,7 @@ function App() {
 
   const deleteTodo = async (id: number) => {
     try {
-      const response = await fetch(`${API_URL}/todos/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/${id}`, {
         method: 'DELETE',
       });
       if (response.ok) {

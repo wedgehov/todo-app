@@ -1,5 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  # Isolate our application components in their own namespace
-  name: todo-app
