@@ -107,8 +107,8 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-md rounded lg px-8 pt-6 pb-8 mb-4 w-full max-w-lg">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 w-full max-w-lg">
         <h1 className="text-2xl font-bold mb-6 text-center text-blue-700">Todo App</h1>
 
         <div className="flex items-center mb-4">
@@ -152,6 +152,18 @@ function App() {
         )}
 
       </div>
+      <footer className="text-center text-gray-600 text-sm">
+        <p>
+          Todo-app by Vegard Hovet.
+          <br />
+          The source code is available on <a href="https://github.com/wedgehov/todo-app" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">GitHub</a> and deployed via a GitOps workflow managed in this <a href="https://github.com/wedgehov/gitops" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">repository</a>.
+        </p>
+        <p className="mt-2">
+          <a href="https://grafana-dev.serit.dev/d/cecb77c6-2b95-4153-9895-ac4367831031/todo-app-dashboard?orgId=1" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            View live performance dashboard on Grafana
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
