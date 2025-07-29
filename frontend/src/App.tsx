@@ -90,6 +90,26 @@ function App() {
     }
   };
 
+  const toggleTodoComplete = async (todo: Todo) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/${todo.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // The backend expects the full updated todo object
+        body: JSON.stringify({ ...todo, isComplete: !todo.isComplete }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to update todo:', await response.text());
+      }
+      // No need to manually update state; SignalR will handle it.
+    } catch (error) {
+      console.error('Failed to update todo:', error);
+    }
+  };
+
   const deleteTodo = async (id: number) => {
     try {
       const response = await fetch(`${API_BASE_URL}/${id}`, {
@@ -136,7 +156,17 @@ function App() {
         <div>
           {todos.map((todo) => (
             <div key={todo.id} className="flex items-center justify-between py-2 border-b border-gray-200">
-              <span className="text-gray-700">{todo.title}</span>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={todo.isComplete}
+                  onChange={() => toggleTodoComplete(todo)}
+                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className={`ml-3 text-gray-700 ${todo.isComplete ? 'line-through text-gray-400' : ''}`}>
+                  {todo.title}
+                </span>
+              </div>
               <button
                 className="text-red-500 hover:text-red-700 focus:outline-none"
                 onClick={() => deleteTodo(todo.id)}
